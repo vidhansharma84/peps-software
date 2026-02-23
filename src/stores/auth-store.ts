@@ -13,6 +13,17 @@ interface AuthState {
   updateUser: (updates: Partial<User>) => void;
 }
 
+export const DEMO_CREDENTIALS: { role: string; email: string; password: string; department?: string }[] = [
+  { role: "Super Admin", email: "rajesh.kumar@peps.edu.in", password: "admin123" },
+  { role: "Gym Head", email: "vikram.singh@peps.edu.in", password: "gym123", department: "gym" },
+  { role: "Medical Head", email: "priya.sharma@peps.edu.in", password: "medical123", department: "medical" },
+  { role: "Finance Head", email: "anita.desai@peps.edu.in", password: "finance123", department: "finance" },
+  { role: "Sports Manager", email: "suresh.reddy@peps.edu.in", password: "sports123", department: "sports" },
+  { role: "Canteen Manager", email: "dinesh.choudhary@peps.edu.in", password: "canteen123", department: "canteen" },
+  { role: "Dorm Staff", email: "meena.kumari@peps.edu.in", password: "dorm123", department: "dormitories" },
+  { role: "Member", email: "rohit.verma@peps.edu.in", password: "member123" },
+];
+
 const DEMO_USERS: Record<string, User> = {
   super_admin: {
     id: "u-admin-1",
@@ -58,26 +69,37 @@ const DEMO_USERS: Record<string, User> = {
     joinedAt: "2023-04-05",
     status: "active",
   },
-  "manager-gym": {
-    id: "u-gym-mgr-1",
-    name: "Arjun Patel",
-    email: "arjun.patel@peps.edu.in",
+  "manager-sports": {
+    id: "u-sports-mgr-1",
+    name: "Suresh Reddy",
+    email: "suresh.reddy@peps.edu.in",
     avatar: "",
     role: "manager",
-    department: "gym",
-    phone: "+91 98765 43214",
-    joinedAt: "2023-06-15",
+    department: "sports",
+    phone: "+91 98765 43217",
+    joinedAt: "2023-07-20",
     status: "active",
   },
-  "staff-medical": {
-    id: "u-medical-staff-1",
-    name: "Neha Gupta",
-    email: "neha.gupta@peps.edu.in",
+  "manager-canteen": {
+    id: "u-canteen-mgr-1",
+    name: "Dinesh Choudhary",
+    email: "dinesh.choudhary@peps.edu.in",
+    avatar: "",
+    role: "manager",
+    department: "canteen",
+    phone: "+91 98765 43218",
+    joinedAt: "2023-08-15",
+    status: "active",
+  },
+  "staff-dormitories": {
+    id: "u-dorm-staff-1",
+    name: "Meena Kumari",
+    email: "meena.kumari@peps.edu.in",
     avatar: "",
     role: "staff",
-    department: "medical",
-    phone: "+91 98765 43215",
-    joinedAt: "2024-01-10",
+    department: "dormitories",
+    phone: "+91 98765 43219",
+    joinedAt: "2024-02-01",
     status: "active",
   },
   member: {

@@ -19,9 +19,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { useAuthStore } from "@/stores/auth-store";
+import { useAuthStore, DEMO_CREDENTIALS } from "@/stores/auth-store";
 import { loginSchema, type LoginFormData } from "@/lib/validators";
 import type { DepartmentSlug, Role } from "@/types";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const quickLoginOptions: {
   label: string;
@@ -46,7 +47,7 @@ export default function LoginPage() {
   const { theme, setTheme } = useTheme();
   const [isLoading, setIsLoading] = useState(false);
 
-  const { register, handleSubmit, formState: { errors } } = useForm<LoginFormData>({
+  const { register, handleSubmit, setValue, formState: { errors } } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
   });
 
@@ -57,6 +58,11 @@ export default function LoginPage() {
     toast.success("Logged in successfully!");
     router.push("/");
     setIsLoading(false);
+  };
+
+  const fillCredentials = (email: string, password: string) => {
+    setValue("email", email);
+    setValue("password", password);
   };
 
   const handleQuickLogin = (role: Role, department?: DepartmentSlug) => {
@@ -156,6 +162,43 @@ export default function LoginPage() {
               </motion.div>
             ))}
           </div>
+
+          <div className="relative my-6">
+            <Separator />
+            <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-card px-2 text-xs text-muted-foreground">
+              Demo Credentials
+            </span>
+          </div>
+
+          <ScrollArea className="h-[200px] rounded-md border">
+            <div className="p-3">
+              <table className="w-full text-xs">
+                <thead>
+                  <tr className="border-b">
+                    <th className="text-left py-2 font-medium text-muted-foreground">Role</th>
+                    <th className="text-left py-2 font-medium text-muted-foreground">Email</th>
+                    <th className="text-left py-2 font-medium text-muted-foreground">Password</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {DEMO_CREDENTIALS.map((cred) => (
+                    <tr
+                      key={cred.email}
+                      className="border-b last:border-0 cursor-pointer hover:bg-muted/50 transition-colors"
+                      onClick={() => fillCredentials(cred.email, cred.password)}
+                    >
+                      <td className="py-2 font-medium">{cred.role}</td>
+                      <td className="py-2 text-muted-foreground">{cred.email}</td>
+                      <td className="py-2 font-mono text-muted-foreground">{cred.password}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </ScrollArea>
+          <p className="text-[10px] text-muted-foreground text-center mt-2">
+            Click any row to fill credentials
+          </p>
         </CardContent>
       </Card>
     </motion.div>

@@ -129,6 +129,15 @@ const ALL_ROLES: Role[] = ["super_admin", "department_head", "manager", "staff",
 const STAFF_ROLES: Role[] = ["super_admin", "department_head", "manager", "staff"];
 const MANAGEMENT_ROLES: Role[] = ["super_admin", "department_head", "manager"];
 
+const HEFRA_NAV: NavItem[] = [
+  { title: "HeFRA Dashboard", href: "/compliance", icon: "ShieldCheck", roles: ["super_admin", "department_head"] },
+  { title: "Personnel", href: "/compliance/personnel", icon: "Users", roles: ["super_admin", "department_head"] },
+  { title: "Premises & Safety", href: "/compliance/premises", icon: "Building2", roles: ["super_admin", "department_head"] },
+  { title: "Equipment", href: "/compliance/equipment", icon: "Wrench", roles: ["super_admin", "department_head"] },
+  { title: "Licensing", href: "/compliance/licensing", icon: "FileCheck", roles: ["super_admin", "department_head"] },
+  { title: "Inspections", href: "/compliance/inspections", icon: "ClipboardCheck", roles: ["super_admin", "department_head"] },
+];
+
 const ADMIN_NAV: NavItem[] = [
   { title: "Overview", href: "/admin", icon: "LayoutDashboard", roles: ["super_admin"] },
   { title: "Users", href: "/admin/users", icon: "Users", roles: ["super_admin"] },
@@ -236,7 +245,7 @@ const MEMBER_NAV: NavItem[] = [
 
 export function getNavigation(role: Role, department?: DepartmentSlug | null): NavItem[] {
   if (role === "super_admin") {
-    return ADMIN_NAV;
+    return [...ADMIN_NAV, ...HEFRA_NAV];
   }
 
   if (role === "member") {
@@ -244,7 +253,12 @@ export function getNavigation(role: Role, department?: DepartmentSlug | null): N
   }
 
   if (department && DEPARTMENT_NAV[department]) {
-    return DEPARTMENT_NAV[department].filter((item) => item.roles.includes(role));
+    const deptNav = DEPARTMENT_NAV[department].filter((item) => item.roles.includes(role));
+    // Medical and Physio department heads get HeFRA compliance nav
+    if ((department === "medical" || department === "physio") && role === "department_head") {
+      return [...deptNav, ...HEFRA_NAV.filter((item) => item.roles.includes(role))];
+    }
+    return deptNav;
   }
 
   return [];

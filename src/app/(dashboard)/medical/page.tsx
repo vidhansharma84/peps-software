@@ -12,6 +12,9 @@ import {
   FileText,
   TestTube2,
   Activity,
+  ShieldCheck,
+  ShieldAlert,
+  AlertTriangle,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -30,6 +33,7 @@ import {
   labResults,
   appointmentsByDay,
 } from "@/data/medical";
+import { complianceSummary, licenses } from "@/data/hefra";
 import { getInitials } from "@/lib/utils";
 
 const container = {
@@ -74,6 +78,50 @@ export default function MedicalDashboardPage() {
           </Link>
         </Button>
       </PageHeader>
+
+      {/* HeFRA Compliance Banner */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1 }}
+      >
+        <Card className={`border-l-4 ${complianceSummary.criticalIssues > 0 ? "border-l-amber-500 bg-amber-500/5" : "border-l-emerald-500 bg-emerald-500/5"}`}>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between flex-wrap gap-3">
+              <div className="flex items-center gap-3">
+                {complianceSummary.criticalIssues > 0 ? (
+                  <ShieldAlert className="h-5 w-5 text-amber-500" />
+                ) : (
+                  <ShieldCheck className="h-5 w-5 text-emerald-500" />
+                )}
+                <div>
+                  <p className="text-sm font-medium">
+                    HeFRA Compliance Score: <span className={complianceSummary.overallScore >= 80 ? "text-emerald-500" : "text-amber-500"}>{complianceSummary.overallScore}%</span>
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    {complianceSummary.criticalIssues > 0 && (
+                      <span className="text-amber-500 font-medium">{complianceSummary.criticalIssues} critical issue{complianceSummary.criticalIssues > 1 ? "s" : ""} require attention. </span>
+                    )}
+                    {complianceSummary.compliant}/{complianceSummary.totalItems} items compliant per Act 829 standards.
+                    {(() => {
+                      const expiringLicenses = licenses.filter(
+                        (l) => l.status === "expired" || (l.status === "active" && new Date(l.expiryDate) < new Date(Date.now() + 90 * 24 * 60 * 60 * 1000))
+                      );
+                      return expiringLicenses.length > 0 ? ` ${expiringLicenses.length} license${expiringLicenses.length > 1 ? "s" : ""} expiring soon.` : "";
+                    })()}
+                  </p>
+                </div>
+              </div>
+              <Button variant="outline" size="sm" asChild>
+                <Link href="/compliance">
+                  <ShieldCheck className="h-3.5 w-3.5 mr-1.5" />
+                  View Compliance
+                </Link>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </motion.div>
 
       {/* Stats Cards */}
       <motion.div
